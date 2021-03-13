@@ -1,0 +1,30 @@
+# Add non root user
+RUN useradd -ms /bin/bash audio && echo "audio:audio" | chpasswd && adduser audio sudo
+
+WORKDIR /home/audio
+
+RUN pip3 install -q soundfile tqdm resampy tabulate
+#pip install -q "tensorflow-gpu<1.14"
+#ln -sf /opt/bin/nvidia-smi /usr/bin/nvidia-smi
+RUN pip3 install gputil psutil humanize
+
+# Open l3
+RUN pip3 install -q openl3
+
+# Wavenet
+RUN pip3 install -q magenta
+
+RUN wget -q -c http://download.magenta.tensorflow.org/models/nsynth/wavenet-ckpt.tar && tar xf wavenet-ckpt.tar
+RUN git clone https://github.com/xavierfav/coala.git
+RUN perl -i -pe 's/torch==1.5.0//g' coala/requirements.txt
+RUN perl -i -pe 's/torchvision==0.6.0/torchvision/g' coala/requirements.txt
+RUN perl -i -pe 's/"device": .*/"device": "cuda"/g' coala/configs/*
+RUN pip install -q -r coala/requirements.txt
+RUN ln -s coala/utils.py
+RUN ln -s coala/models_t1000.py
+RUN ln -s coala/scaler_top_1000.pkl
+RUN ln -s coala/scaler_top_1000.pkl
+RUN ln -s coala/json
+
+USER audio
+ENV HOME /home/audio
