@@ -4,7 +4,7 @@ RUN useradd -ms /bin/bash audio && echo "audio:audio" | chpasswd && adduser audi
 WORKDIR /home/audio
 
 RUN pip3 install -q soundfile tqdm resampy tabulate
-#pip install -q "tensorflow-gpu<1.14"
+RUN pip3 install -q "tensorflow-gpu<1.14"
 #ln -sf /opt/bin/nvidia-smi /usr/bin/nvidia-smi
 RUN pip3 install gputil psutil humanize
 

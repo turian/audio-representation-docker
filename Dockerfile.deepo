@@ -6,7 +6,7 @@
 # tensorflow    1.13.1 (pip)
 # ==================================================================
 
-FROM nvidia/cuda:11-devel-ubuntu18.04
+FROM nvidia/cuda:11.1-cudnn8-devel-ubuntu18.04
 ENV LANG C.UTF-8
 RUN APT_INSTALL="apt-get install -y --no-install-recommends" && \
     PIP_INSTALL="python -m pip --no-cache-dir install --upgrade" && \
