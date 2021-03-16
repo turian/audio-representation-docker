@@ -10,10 +10,18 @@ RUN useradd -ms /bin/bash repr && echo "repr:repr" | chpasswd && adduser repr su
 WORKDIR /home/repr
 
 RUN apt-get update
-RUN apt-get install -y git build-essential python3-pip
+RUN apt-get install -y git build-essential python3-pip git libsndfile-dev vorbis-tools lsb-release wget software-properties-common sudo less bc screen tmux unzip vim wget openssh-client libasound2-dev
+RUN apt-get install -y libsndfile-dev vorbis-tools
+RUN apt-get install -y lsb-release wget software-properties-common
+#RUN apt-get install -y llvm clang
+#RUN apt-get install -y llvm-10*
 
-RUN pip3 install -q tqdm tabulate
-RUN pip3 install -q "tensorflow-gpu<1.14"
+RUN pip3 install numba==0.48.0 tqdm tabulate gputil psutil humanize soundfile tqdm resampy tabulate
+RUN pip3 install --upgrade pip
+RUN pip3 install openl3 "tensorflow-gpu==1.14.0" torch tabulate magenta --upgrade-strategy only-if-needed 2>&1 | tee pip.log
+
+RUN pip3 install git+https://github.com/turian/auraloss@linstft
+
 #ln -sf /opt/bin/nvidia-smi /usr/bin/nvidia-smi
 RUN pip3 install gputil psutil humanize
 
@@ -28,22 +36,14 @@ RUN ln -s coala/models_t1000.py
 RUN ln -s coala/scaler_top_1000.pkl
 RUN ln -s coala/json
 
-RUN apt-get install -y libsndfile-dev vorbis-tools
-RUN apt-get install -y lsb-release wget software-properties-common
-#RUN apt-get install -y llvm clang
-RUN apt-get install -y llvm-10*
 
-RUN cd /usr/bin && ln -s llvm-config-10 llvm-config
-#RUN bash -c "$(wget -O - https://apt.llvm.org/llvm.sh)"
-RUN pip3 install soundfile tqdm resampy tabulate
-
-# Open l3
-RUN pip3 install openl3
-
-# Wavenet
-RUN pip3 install magenta
+#RUN cd /usr/bin && ln -s llvm-config-10 llvm-config
+##RUN bash -c "$(wget -O - https://apt.llvm.org/llvm.sh)"
+#RUN pip3 install soundfile tqdm resampy tabulate
 
 RUN pip3 install -r coala/requirements.txt
 
-USER repr
-ENV HOME /home/repr
+#RUN pip3 install tensorflow-addons
+
+#USER repr
+#ENV HOME /home/repr
